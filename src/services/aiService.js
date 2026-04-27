@@ -1,12 +1,12 @@
 /**
  * AI Service Module
  * Handles all API calls to the AI model for recommendations
- * Supports Google Gemini, Anthropic Claude API, and OpenAI API
+ * Supports Google Gemini, Anthropic Claude API, OpenAI API, and OpenRouter
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_PROVIDER = import.meta.env.VITE_AI_PROVIDER || 'gemini';
+const API_PROVIDER = import.meta.env.VITE_AI_PROVIDER || 'openrouter';
 const API_KEY = import.meta.env.VITE_AI_API_KEY;
 
 /**
@@ -16,7 +16,7 @@ function validateAPIKey() {
   if (!API_KEY) {
     throw new Error(
       'API key not configured. Please set VITE_AI_API_KEY in your .env file. ' +
-      'Visit https://aistudio.google.com for Google Gemini, https://console.anthropic.com for Anthropic, or https://platform.openai.com for OpenAI.'
+      'Visit https://openrouter.ai for OpenRouter (free), https://aistudio.google.com for Google Gemini, https://console.anthropic.com for Anthropic, or https://platform.openai.com for OpenAI.'
     );
   }
 }
@@ -50,6 +50,53 @@ Your response MUST follow this exact JSON format:
 }
 
 Be precise — only recommend phones that genuinely match the user's requirements. If they ask for under $X, only include phones under that price. Always respond with ONLY valid JSON, no other text.`;
+}
+
+/**
+ * Call OpenRouter API (Free tier available)
+ * Get your free API key at https://openrouter.ai
+ */
+async function callOpenRouterAPI(userInput, catalog) {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`,
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'PhoneAI Recommender',
+    },
+    body: JSON.stringify({
+      model: 'openrouter/free',
+      messages: [
+        {
+          role: 'system',
+          content: createSystemPrompt(catalog),
+        },
+        {
+          role: 'user',
+          content: userInput,
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`OpenRouter API Error: ${errorData.error?.message || response.statusText}`);
+  }
+
+  const data = await response.json();
+  const content = data.choices[0]?.message?.content;
+  if (!content) {
+    throw new Error('No content in API response');
+  }
+
+  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Could not parse JSON from API response');
+  }
+
+  return JSON.parse(jsonMatch[0]);
 }
 
 /**
@@ -102,7 +149,7 @@ async function callAnthropicAPI(userInput, catalog) {
 async function callGeminiAPI(userInput, catalog) {
   try {
     const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const systemPrompt = createSystemPrompt(catalog);
     const fullPrompt = `${systemPrompt}\n\nUser Query: ${userInput}`;
@@ -186,7 +233,9 @@ export async function getAIRecommendations(userInput, phonesData) {
     const catalog = formatCatalog(phonesData);
 
     let result;
-    if (API_PROVIDER === 'gemini') {
+    if (API_PROVIDER === 'openrouter') {
+      result = await callOpenRouterAPI(userInput, catalog);
+    } else if (API_PROVIDER === 'gemini') {
       result = await callGeminiAPI(userInput, catalog);
     } else if (API_PROVIDER === 'openai') {
       result = await callOpenAIAPI(userInput, catalog);
