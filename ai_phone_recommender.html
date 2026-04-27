@@ -1,0 +1,375 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .app {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--color-text-primary);
+    padding: 1.5rem 0;
+  }
+
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .hero-icon {
+    width: 44px; height: 44px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .hero-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.3px;
+  }
+  .hero-text p { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .search-bar {
+    display: flex; gap: 8px; margin-bottom: 1.5rem;
+  }
+  .search-bar input {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+  .search-bar input:focus { border-color: #378ADD; box-shadow: 0 0 0 2px rgba(55,138,221,0.15); }
+  .search-bar button {
+    padding: 10px 18px;
+    font-size: 13px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    background: #185FA5;
+    color: #E6F1FB;
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .search-bar button:hover { background: #0C447C; }
+  .search-bar button:disabled { background: var(--color-background-secondary); color: var(--color-text-tertiary); cursor: not-allowed; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
+  .chip {
+    padding: 5px 12px; font-size: 12px; font-weight: 500;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.12s;
+  }
+  .chip:hover { background: var(--color-background-primary); color: var(--color-text-primary); border-color: var(--color-border-primary); }
+
+  .ai-response {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-text-primary);
+  }
+  .ai-response .ai-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.5px;
+    color: #185FA5;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.6px;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .product-card:hover { border-color: var(--color-border-primary); }
+  .product-card.highlighted {
+    border: 1.5px solid #185FA5;
+  }
+  .product-card.highlighted .rec-badge {
+    display: flex;
+  }
+
+  .rec-badge {
+    display: none;
+    position: absolute;
+    top: -1px; right: 10px;
+    background: #185FA5;
+    color: #E6F1FB;
+    font-size: 10px; font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    align-items: center; gap: 4px;
+  }
+
+  .phone-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+
+  .product-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+  }
+  .product-brand { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 8px; }
+
+  .product-price {
+    font-size: 16px; font-weight: 500;
+    color: #185FA5;
+    margin-bottom: 8px;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-size: 10px; font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .stars { font-size: 11px; color: #BA7517; margin-bottom: 6px; }
+
+  .score-bar-wrap { margin-top: 8px; }
+  .score-label { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 3px; }
+  .score-bar { height: 3px; background: var(--color-border-tertiary); border-radius: 2px; overflow: hidden; }
+  .score-fill { height: 100%; background: #185FA5; border-radius: 2px; transition: width 0.5s ease; }
+
+  .loading-dots span {
+    display: inline-block;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #185FA5;
+    margin: 0 2px;
+    animation: bounce 1s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 5px 12px; font-size: 12px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-secondary);
+    cursor: pointer; transition: all 0.12s;
+  }
+  .filter-btn.active {
+    background: #E6F1FB; color: #0C447C;
+    border-color: #B5D4F4;
+  }
+
+  .empty-state {
+    text-align: center; padding: 2rem 0; color: var(--color-text-secondary);
+    font-size: 14px;
+  }
+</style>
+
+<div class="app">
+  <h2 class="sr-only">AI-powered mobile phone recommendation system</h2>
+
+  <div class="hero">
+    <div class="hero-icon">📱</div>
+    <div class="hero-text">
+      <h1>PhoneAI Recommender</h1>
+      <p>Describe what you need — AI finds your perfect phone</p>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input id="userInput" type="text" placeholder="e.g. best camera phone under $600, long battery life..." />
+    <button id="searchBtn" onclick="getRecommendations()">Ask AI ↗</button>
+  </div>
+
+  <div class="chips" id="quickChips">
+    <span class="chip" onclick="fillAndSearch('Best phone under $300')">Under $300</span>
+    <span class="chip" onclick="fillAndSearch('Best camera phone under $800')">Best camera</span>
+    <span class="chip" onclick="fillAndSearch('Phone with longest battery life')">Long battery</span>
+    <span class="chip" onclick="fillAndSearch('Flagship phone with best performance')">Top performance</span>
+    <span class="chip" onclick="fillAndSearch('Budget Android phone under $200')">Budget Android</span>
+    <span class="chip" onclick="fillAndSearch('Best iPhone alternative')">iPhone alternative</span>
+  </div>
+
+  <div id="aiResponseBox" style="display:none"></div>
+
+  <div class="filter-row" id="filterRow">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All phones</button>
+    <button class="filter-btn" onclick="setFilter('recommended', this)">AI Picks</button>
+    <button class="filter-btn" onclick="setFilter('budget', this)">Under $400</button>
+    <button class="filter-btn" onclick="setFilter('premium', this)">$400+</button>
+  </div>
+
+  <div class="section-label" id="gridLabel">All phones</div>
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<script>
+const PHONES = [
+  { id:1, name:'iPhone 16 Pro', brand:'Apple', price:999, emoji:'🍎', tags:['5G','ProRAW','A18 Pro','Face ID'], rating:4.9, battery:4422, camera:200, perf:100, category:'premium', description:'Apple flagship with titanium design, A18 Pro chip, and pro camera system.' },
+  { id:2, name:'Galaxy S25 Ultra', brand:'Samsung', price:1299, emoji:'🌌', tags:['S Pen','200MP','AI','5G'], rating:4.8, battery:5000, camera:200, perf:98, category:'premium', description:'Samsung top-of-the-line with built-in S Pen, 200MP camera and Galaxy AI.' },
+  { id:3, name:'Pixel 9 Pro', brand:'Google', price:999, emoji:'🔵', tags:['AI Camera','7yr updates','Pure Android'], rating:4.8, battery:4700, camera:50, perf:95, category:'premium', description:'Google\'s best with Tensor G4 chip, best-in-class AI photography and 7 years of updates.' },
+  { id:4, name:'OnePlus 13', brand:'OnePlus', price:799, emoji:'🔴', tags:['Snapdragon 8 Elite','100W charge','5G'], rating:4.7, battery:6000, camera:50, perf:96, category:'premium', description:'Blazing fast with 100W charging, Snapdragon 8 Elite, and a 6000mAh battery.' },
+  { id:5, name:'Motorola Edge 50 Pro', brand:'Motorola', price:449, emoji:'🔶', tags:['125W charge','pOLED','5G','Mid-range'], rating:4.4, battery:4500, camera:50, perf:78, category:'budget', description:'Mid-ranger gem with 125W fast charge, clean Android and an excellent OLED display.' },
+  { id:6, name:'Samsung Galaxy A55', brand:'Samsung', price:449, emoji:'💎', tags:['5G','Gorilla Glass Victus+','IP67'], rating:4.5, battery:5000, camera:50, perf:72, category:'budget', description:'Premium mid-ranger with durable build, 5000mAh battery and 50MP camera.' },
+  { id:7, name:'Redmi Note 13 Pro+', brand:'Xiaomi', price:349, emoji:'⚡', tags:['200MP','120W charge','Budget King'], rating:4.4, battery:5000, camera:200, perf:68, category:'budget', description:'Incredible value — 200MP camera, 120W charging at an unbeatable price.' },
+  { id:8, name:'iPhone 16', brand:'Apple', price:799, emoji:'🍏', tags:['A18','Camera Control','5G'], rating:4.7, battery:3561, camera:48, perf:92, category:'premium', description:'Mainstream Apple flagship with Camera Control button, A18 chip and Action button.' },
+  { id:9, name:'Nothing Phone 3a', brand:'Nothing', price:379, emoji:'🔲', tags:['Glyph','Clean UI','Mid-range'], rating:4.5, battery:5000, camera:50, perf:70, category:'budget', description:'Unique transparent design, Glyph interface and clean Nothing OS 3.' },
+  { id:10, name:'Poco X6 Pro', brand:'Poco', price:299, emoji:'🏆', tags:['Gaming','Dimensity 8300','Budget'], rating:4.3, battery:5000, camera:64, perf:75, category:'budget', description:'Gaming powerhouse under $300 with Dimensity 8300 and 120Hz AMOLED.' },
+  { id:11, name:'Sony Xperia 1 VI', brand:'Sony', price:1299, emoji:'🎬', tags:['4K OLED','Zeiss','Pro Video'], rating:4.6, battery:5000, camera:52, perf:93, category:'premium', description:'Creator-focused flagship with Zeiss optics, 4K HDR OLED and pro video tools.' },
+  { id:12, name:'Realme GT 6', brand:'Realme', price:499, emoji:'🚀', tags:['Snapdragon 8s Gen 3','AI','Ultra charging'], rating:4.3, battery:5500, camera:50, perf:82, category:'budget', description:'Affordable flagship killer with Snapdragon 8s Gen 3 and 120W ultra charging.' },
+];
+
+let activeFilter = 'all';
+let recommendedIds = [];
+
+function renderGrid() {
+  const grid = document.getElementById('productsGrid');
+  let phones = PHONES;
+
+  if (activeFilter === 'recommended') phones = phones.filter(p => recommendedIds.includes(p.id));
+  else if (activeFilter === 'budget') phones = phones.filter(p => p.price < 400);
+  else if (activeFilter === 'premium') phones = phones.filter(p => p.price >= 400);
+
+  if (phones.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No phones match this filter yet. Try asking AI first!</div>';
+    return;
+  }
+
+  grid.innerHTML = phones.map(p => {
+    const isRec = recommendedIds.includes(p.id);
+    const stars = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5-Math.round(p.rating));
+    const matchScore = isRec ? (90 + Math.floor(Math.random()*10)) : 0;
+    return `
+      <div class="product-card ${isRec ? 'highlighted' : ''}" onclick="showDetail(${p.id})">
+        <div class="rec-badge">AI Pick</div>
+        <span class="phone-emoji">${p.emoji}</span>
+        <div class="product-name">${p.name}</div>
+        <div class="product-brand">${p.brand}</div>
+        <div class="stars">${stars} ${p.rating}</div>
+        <div class="product-price">$${p.price.toLocaleString()}</div>
+        <div class="tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        ${isRec ? `<div class="score-bar-wrap"><div class="score-label">Match score</div><div class="score-bar"><div class="score-fill" style="width:${matchScore}%"></div></div></div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const labels = { all:'All phones', recommended:'AI-recommended picks', budget:'Budget phones under $400', premium:'Premium phones $400+' };
+  document.getElementById('gridLabel').textContent = labels[f] || 'Phones';
+  renderGrid();
+}
+
+function fillAndSearch(text) {
+  document.getElementById('userInput').value = text;
+  getRecommendations();
+}
+
+async function getRecommendations() {
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) return;
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true; btn.textContent = 'Thinking...';
+
+  const box = document.getElementById('aiResponseBox');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="ai-label">AI Recommendation Engine</div><div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  const catalog = PHONES.map(p =>
+    `ID:${p.id} | ${p.name} (${p.brand}) | $${p.price} | Battery:${p.battery}mAh | Camera:${p.camera}MP | Tags:${p.tags.join(',')} | ${p.description}`
+  ).join('\n');
+
+  const systemPrompt = `You are a helpful mobile phone recommendation expert. You have access to a catalog of phones and must recommend the BEST matches based on the user's query.
+
+PHONE CATALOG:
+${catalog}
+
+Your response MUST follow this exact JSON format:
+{
+  "summary": "A friendly 2-3 sentence explanation of your recommendations",
+  "recommended_ids": [list of phone IDs as numbers, best match first, max 4],
+  "highlights": "One sentence about what makes these phones stand out for this query"
+}
+
+Be precise — only recommend phones that genuinely match the user's requirements. If they ask for under $X, only include phones under that price. Always respond with ONLY valid JSON, no other text.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: input }]
+      })
+    });
+
+    const data = await resp.json();
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    recommendedIds = parsed.recommended_ids || [];
+    box.innerHTML = `
+      <div class="ai-label">AI Recommendation</div>
+      <div style="font-size:14px;line-height:1.7;margin-bottom:8px;">${parsed.summary}</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);font-style:italic;">${parsed.highlights}</div>
+    `;
+
+    if (activeFilter === 'all' && recommendedIds.length > 0) {
+      setFilter('recommended', document.querySelectorAll('.filter-btn')[1]);
+    } else {
+      renderGrid();
+    }
+
+  } catch(err) {
+    box.innerHTML = `<div class="ai-label">AI Recommendation</div><div style="font-size:14px;color:var(--color-text-secondary)">Something went wrong. Please try again.</div>`;
+  }
+
+  btn.disabled = false; btn.textContent = 'Ask AI ↗';
+}
+
+function showDetail(id) {
+  const p = PHONES.find(x => x.id === id);
+  if (!p) return;
+  sendPrompt(`Tell me more about the ${p.name} — its pros, cons, and who it's best suited for.`);
+}
+
+renderGrid();
+</script>
